@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Right Atrium", "label": "Right Atrium", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Right Ventricle", "label": "Right Ventricle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Artery", "label": "Pulmonary Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Arterioles", "label": "Pulmonary Arterioles", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Capillaries", "label": "Pulmonary Capillaries", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Cappilaries", "label": "Pulmonary Cappilaries", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Venules", "label": "Pulmonary Venules", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pulmonary Veins", "label": "Pulmonary Veins", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Left Atrium", "label": "Left Atrium", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Left Ventricle", "label": "Left Ventricle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Aorta", "label": "Aorta", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Brachiocephalic Artery", "label": "R Brachiocephalic Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Common Carotid Artery", "label": "L Common Carotid Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Subclavian Artery", "label": "L Subclavian Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Subclavian Artery", "label": "R Subclavian Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Common Carotid Artery", "label": "R Common Carotid Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Axillary Artery", "label": "L Axillary Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Axillary Artery", "label": "R Axillary Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Vertebral Artery", "label": "R Vertebral Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Thyrocervical Trunk", "label": "R Thyrocervical Trunk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Costocervical Trunk", "label": "R Costocervical Trunk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Brachial Artery", "label": "R Brachial Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Cephalic Vein", "label": "R Cephalic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Brachial Vein", "label": "R Brachial Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Basilic Vein", "label": "R Basilic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Subclavian Vein", "label": "R Subclavian Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Axillary Vein", "label": "R Axillary Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Brachiocephalic Vein", "label": "R Brachiocephalic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Superior Vena Cava", "label": "Superior Vena Cava", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Brachial Artery", "label": "L Brachial Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Cephalic Vein", "label": "L Cephalic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Brachial Vein", "label": "L Brachial Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Basilic Vein", "label": "L Basilic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Subclavian Vein", "label": "L Subclavian Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Axillary Vein", "label": "L Axillary Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L Brachiocephalic Vein", "label": "L Brachiocephalic Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Sublcavian Artery", "label": "R Sublcavian Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Internal Thoracic Artery", "label": "R Internal Thoracic Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Dorsal Scapular Artery", "label": "R Dorsal Scapular Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Azygous Vein", "label": "Azygous Vein", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Inferior Thyroid Artery", "label": "R Inferior Thyroid Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Suprascapular Artery", "label": "R Suprascapular Artery", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "R Transverse Cervical Artery", "label": "R Transverse Cervical Artery", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Right Atrium", "to": "Right Ventricle", "width": 1}, {"arrows": "to", "from": "Right Ventricle", "to": "Pulmonary Artery", "width": 1}, {"arrows": "to", "from": "Pulmonary Artery", "to": "Pulmonary Arterioles", "width": 1}, {"arrows": "to", "from": "Pulmonary Arterioles", "to": "Pulmonary Capillaries", "width": 1}, {"arrows": "to", "from": "Pulmonary Cappilaries", "to": "Pulmonary Venules", "width": 1}, {"arrows": "to", "from": "Pulmonary Venules", "to": "Pulmonary Veins", "width": 1}, {"arrows": "to", "from": "Pulmonary Veins", "to": "Left Atrium", "width": 1}, {"arrows": "to", "from": "Left Atrium", "to": "Left Ventricle", "width": 1}, {"arrows": "to", "from": "Left Ventricle", "to": "Aorta", "width": 1}, {"arrows": "to", "from": "Aorta", "to": "R Brachiocephalic Artery", "width": 1}, {"arrows": "to", "from": "Aorta", "to": "L Common Carotid Artery", "width": 1}, {"arrows": "to", "from": "Aorta", "to": "L Subclavian Artery", "width": 1}, {"arrows": "to", "from": "R Brachiocephalic Artery", "to": "R Subclavian Artery", "width": 1}, {"arrows": "to", "from": "R Brachiocephalic Artery", "to": "R Common Carotid Artery", "width": 1}, {"arrows": "to", "from": "L Subclavian Artery", "to": "L Axillary Artery", "width": 1}, {"arrows": "to", "from": "R Subclavian Artery", "to": "R Axillary Artery", "width": 1}, {"arrows": "to", "from": "R Subclavian Artery", "to": "R Vertebral Artery", "width": 1}, {"arrows": "to", "from": "R Subclavian Artery", "to": "R Thyrocervical Trunk", "width": 1}, {"arrows": "to", "from": "R Subclavian Artery", "to": "R Costocervical Trunk", "width": 1}, {"arrows": "to", "from": "R Axillary Artery", "to": "R Brachial Artery", "width": 1}, {"arrows": "to", "from": "R Brachial Artery", "to": "R Cephalic Vein", "width": 1}, {"arrows": "to", "from": "R Brachial Artery", "to": "R Brachial Vein", "width": 1}, {"arrows": "to", "from": "R Brachial Artery", "to": "R Basilic Vein", "width": 1}, {"arrows": "to", "from": "R Cephalic Vein", "to": "R Subclavian Vein", "width": 1}, {"arrows": "to", "from": "R Brachial Vein", "to": "R Axillary Vein", "width": 1}, {"arrows": "to", "from": "R Basilic Vein", "to": "R Axillary Vein", "width": 1}, {"arrows": "to", "from": "R Axillary Vein", "to": "R Subclavian Vein", "width": 1}, {"arrows": "to", "from": "R Subclavian Vein", "to": "R Brachiocephalic Vein", "width": 1}, {"arrows": "to", "from": "R Brachiocephalic Vein", "to": "Superior Vena Cava", "width": 1}, {"arrows": "to", "from": "L Axillary Artery", "to": "L Brachial Artery", "width": 1}, {"arrows": "to", "from": "L Brachial Artery", "to": "L Cephalic Vein", "width": 1}, {"arrows": "to", "from": "L Brachial Artery", "to": "L Brachial Vein", "width": 1}, {"arrows": "to", "from": "L Brachial Artery", "to": "L Basilic Vein", "width": 1}, {"arrows": "to", "from": "L Cephalic Vein", "to": "L Subclavian Vein", "width": 1}, {"arrows": "to", "from": "L Brachial Vein", "to": "L Axillary Vein", "width": 1}, {"arrows": "to", "from": "L Basilic Vein", "to": "L Axillary Vein", "width": 1}, {"arrows": "to", "from": "L Axillary Vein", "to": "L Subclavian Vein", "width": 1}, {"arrows": "to", "from": "L Subclavian Vein", "to": "L Brachiocephalic Vein", "width": 1}, {"arrows": "to", "from": "L Brachiocephalic Vein", "to": "Superior Vena Cava", "width": 1}, {"arrows": "to", "from": "R Sublcavian Artery", "to": "R Internal Thoracic Artery", "width": 1}, {"arrows": "to", "from": "R Sublcavian Artery", "to": "R Dorsal Scapular Artery", "width": 1}, {"arrows": "to", "from": "R Internal Thoracic Artery", "to": "Azygous Vein", "width": 1}, {"arrows": "to", "from": "R Thyrocervical Trunk", "to": "R Inferior Thyroid Artery", "width": 1}, {"arrows": "to", "from": "R Thyrocervical Trunk", "to": "R Suprascapular Artery", "width": 1}, {"arrows": "to", "from": "R Thyrocervical Trunk", "to": "R Transverse Cervical Artery", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
