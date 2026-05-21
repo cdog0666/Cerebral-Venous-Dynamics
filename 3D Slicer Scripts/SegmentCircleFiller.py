@@ -1,109 +1,32 @@
 import slicer
-
 import numpy as np
-
 from scipy.ndimage import binary_fill_holes
 
-from vtk.util import numpy_support
-
-
-
-#
-
-# Select your segmentation node
-
-#
-
-segmentationNode = slicer.util.getNode("Segmentation")  # change name if needed
-
-
-
-#
-
-# Export segmentation to labelmap
-
-#
+segmentationNode = slicer.util.getNode("Segmentation_3_1") ##IMPORTANT: Change inside the quotes to the name of your segmentation node. You can find it in the Data module. It should be something like "Segmentation_3_1" or "Segmentation_4_1" depending on how many segmentations you have created.
+segmentation = segmentationNode.GetSegmentation()
 
 labelmapNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
 
-
-
+# export
 slicer.modules.segmentations.logic().ExportAllSegmentsToLabelmapNode(
-
     segmentationNode,
-
     labelmapNode
-
 )
-
-
-
-#
-
-# Get numpy array from labelmap
-
-#
 
 array = slicer.util.arrayFromVolume(labelmapNode)
 
-
-
-#
-
-# Fill holes slice-by-slice
-
-#
-
 filledArray = np.zeros_like(array)
 
-
-
-for i in range(array.shape[0]):  # axial slices
-
-    sliceMask = array[i] > 0
-
-
-
-    # Fill enclosed regions
-
-    filledSlice = binary_fill_holes(sliceMask)
-
-
-
-    filledArray[i] = filledSlice.astype(array.dtype)
-
-
-
-#
-
-# Write back to volume
-
-#
+for i in range(array.shape[0]):
+    filledArray[i] = binary_fill_holes(array[i] > 0)
 
 slicer.util.updateVolumeFromArray(labelmapNode, filledArray)
 
-
-
-#
-
-# Import back into segmentation
-
-#
-
-filledSegmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode")
-
-filledSegmentationNode.CreateDefaultDisplayNodes()
-
-
-
+# IMPORTANT: overwrite SAME segmentation CLEANLY
 slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(
-
     labelmapNode,
-
-    filledSegmentationNode
-
+    segmentationNode
 )
 
-
-
-print("Filled segmentation created.")
+# cleanup
+slicer.mrmlScene.RemoveNode(labelmapNode)
